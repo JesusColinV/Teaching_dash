@@ -7,14 +7,9 @@ from werkzeug.middleware.dispatcher import DispatcherMiddleware # filtro de solu
 from werkzeug.serving import run_simple # llamador de la funcion
 
 from os import environ # para pasar parametros , libreria os interactua con las carpetas que tienes en este momento
-from modules.server import server # identifica el framwork en el cual se corre el código, es importante para la velocidad
-"""
-1.- fastapi
-2.- flask (dash)
-3.- django
-"""
+from modulos.server import server # identifica el framwork en el cual se corre el código, es importante para la velocidad
 
-from app import app
+from app_admin import app 
 
 
 if __name__ == '__main__':
