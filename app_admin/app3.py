@@ -1,5 +1,4 @@
-# VERSIONES CON AVANCES
-
+# SCRIPT DE AYUDA
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
 from modulos.server import *
@@ -22,20 +21,11 @@ sesion_status = []
 for status in sesion:
     if status not in sesion_status:
         sesion_status.append(status)
+# print(sesion_status)
 
 # df filtrado a los clientes con saldo insoluto mayor a 3 mdp
 
 df_filtro_saldos = df[df['Saldo insoluto actual'] > 3000000]
-
-# COLORES
-
-colors = {
-    'background': '#111111',
-    'text': '#7FDBFF'
-}
-
-
-###
 
 
 builder = Builder()
@@ -53,19 +43,19 @@ def Tabs1():
     ])
 
 
-def Tabs2():
-    return html.Div([
-        dcc.Tabs(id="tabs-example-graph2", value='tab-1-example-graph', children=[
-            dcc.Tab(label='FONDEADOR', value='tab-1-example-graph'),
-            dcc.Tab(label='CESIÓN', value='tab-2-example-graph'),
-            dcc.Tab(label='SECTOR', value='tab-3-example-graph'),
-        ]),
-        html.Div(id='tabs-content-example-graph2')
-    ])
-
-
 def drawFigure2():
     return html.Div(id='graph2')
+
+
+def dropdown0():
+    return html.Div([
+        dcc.Dropdown(
+            id="dropdown0",
+            options=['Riesgo muy alto', 'Riesgo alto',
+                     'Riesgo moderado', 'Sin riesgo'],
+            value='Riesgo muy alto',
+            clearable=False,
+        )])
 
 
 app = Dash(name='app_superadmi',
@@ -79,40 +69,23 @@ app = Dash(name='app_superadmi',
 app.layout = html.Div([
     # Component to detect the url
     dcc.Location(id='url', refresh=False),
-    dbc.Card(
-        dbc.CardBody(children=[
-            dbc.Row(dbc.Col([
-                dbc.Row(builder.drawDescriptionH4('PORTAFOLIO DE CLIENTES'))
-            ], width=12),
-                align='center'),
-            html.Br(),
-            dbc.Row(dbc.Col([
-                dbc.Row(builder.drawParagraph(
-                    'SALDOS INSOLUTOS POR CLIENTE Y POR PERFIL DE RIESGO DEL CLIENTE', 17, 'black'))
-            ], width=12),
-                align='center'),
-            dbc.Row(Tabs1(),
-                    id='tab1',
-                    className='Body',),
-            html.Br(),
-            dbc.Row(dbc.Col([
-                dbc.Row(builder.drawParagraph(
-                    'SALDOS INSOLUTOS POR FONDEADOR, POR ESTATUS DE CESIÓN Y POR SECTOR', 17, 'black'))
-            ], width=12),
-                align='center'),
-            html.Br(),
-            dbc.Row(Tabs2(),
-                    id='tab2',
-                    className='Body',),
-            html.Br(),
-            # dbc.Row([
-            #    dbc.Col([
-            #        drawFigure2()
-            #    ], width=12),
-            # ], align='center'),
+    dbc.Row(builder.drawDescription('PORTAFOLIO DE CLIENTES'),
+            id='main_title',
+            className='main_title',),
+
+    dbc.Row(Tabs1(),
+            id='body',
+            className='Body',),
+    # html.Br(),
+    # dbc.Row(
+    #    html.Div(id='tabs-content-example-graph'),
+    #    id='body2',
+    #    className='graphs',),
+    html.Br(),
+    dbc.Row(builder.drawDescription('test')),
+    html.Div(id='tabs-test')
 
 
-        ]), color='dark')
 ],
     # End of Dashboard
     id='mainContainer',
@@ -126,12 +99,13 @@ app.layout = html.Div([
 @app.callback(Output('tabs-test', 'children'),
               Input('tabs-example-graph', 'value'))
 def render_content(tab):
+    # print('opcion00')
     if tab == 'tab-1-example-graph':
-        # print('opcion1')
-        return html.Div(builder.drawDescriptionH5('ESTAMOS EN TAB1'))
+        print('opcion1')
+        return html.Div(builder.drawDescription('ESTAMOS EN TAB1'))
     elif tab == 'tab-2-example-graph':
-        # print('opcion2')
-        return html.Div(builder.drawDescriptionH5('ESTAMOS EN TAB2'))
+        print('opcion2')
+        return html.Div(builder.drawDescription('ESTAMOS EN TAB2'))
 
 
 @app.callback(Output('tabs-content-example-graph', 'children'),
@@ -139,24 +113,23 @@ def render_content(tab):
 def render_content(tab):
     # print('opcion0')
     if tab == 'tab-1-example-graph':
-        # print('opcion1')
+        print('opcion1')
         return html.Div(id='my_div0', children=[
             html.Div(children=[
                 dbc.Row(builder.graphBarPx(
                     df=df_filtro_saldos, ejex='Cliente', ejey='Saldo insoluto actual', color='Perfil de riesgo', title='GRAFICA 1', color_discrete_map={
                         'Sin riesgo': 'blue',
                         'Riesgo moderado': 'yellow', 'Riesgo alto': 'orange', 'Riesgo muy alto': 'red'
-                    }))])], style={"width": "100%", "display": "block", "flex-direction": "row", "justify-content": "center"})
+                    }))])])
     elif tab == 'tab-2-example-graph':
-        # print('opcion2')
+        print('opcion2')
         return html.Div(id='my_div', children=[
             html.Div(children=[
-                dbc.Row(builder.drawParagraph(
-                    'SELECCIONA EL CLIENTE POR TIPO DE PERFIL', 10, 'black')),
+                dbc.Row(builder.drawDescription('GRAFICA 2')),
                 dbc.Row(dcc.Dropdown(
                     id="dropdown0",
                     options=['Riesgo muy alto', 'Riesgo alto',
-                             'Riesgo moderado', 'Sin riesgo'],
+                     'Riesgo moderado', 'Sin riesgo'],
                     value='Riesgo muy alto',
                     clearable=False,
                 ))]),
@@ -165,7 +138,7 @@ def render_content(tab):
                 dbc.Row(
                     drawFigure2())])
 
-        ], style={"width": "100%", "display": "block", "flex-direction": "row", "justify-content": "center"})
+        ])
 
 
 @app.callback(
@@ -200,7 +173,7 @@ def update_bar_chart(Perfil):
         font=dict(
             family="Courier New, monospace",
             size=18,
-            color="#0a0a0a"))
+            color="#fcfcfc"))
     clientes_saldos.update_layout(barmode='stack')
     clientes_saldos.update_layout(
         template='plotly_dark',

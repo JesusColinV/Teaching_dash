@@ -2,6 +2,7 @@ from dash import dcc
 from datetime import date
 import plotly.express as px
 import plotly.graph_objects as go
+import dash_html_components as html
 
 
 class Builder:
@@ -20,12 +21,14 @@ class Builder:
             end_date=date(2017, 8, 25)
         )
 
-#df, ejex, ejey, title='Titulo de la grafica'
+    # GRAFICAS
     def graphBarPx(self, *args, **kwargs):
         self.df = kwargs['df']
         self.ejex = kwargs['ejex']
         self.ejey = kwargs['ejey']
         self.title = kwargs['title']
+        self.color = kwargs['color']
+        self.color_discrete_map = kwargs['color_discrete_map']
         """
         Elemento grafica de barras (px bar) retornado
         """
@@ -33,50 +36,37 @@ class Builder:
         px_bar = px.bar(self.df,
                         x=self.ejex,
                         y=self.ejey,
-                        title=self.title)
+                        title=self.title,
+                        color=self.color,
+                        color_discrete_map=self.color_discrete_map
+                        )
+
         px_bar.update_layout(
             template='plotly_dark',
             plot_bgcolor='rgba(0, 0, 0, 0)',
             paper_bgcolor='rgba(0, 0, 0, 0)',
+            # xaxis_title="FONDEADOR",
+            #legend_title="PERFIL DEL CLIENTE",
+            font=dict(
+                #family="Courier New, monospace",
+                size=12,
+                color="#0a0a0a")
         )
 
         return [dcc.Graph(figure=px_bar)]
 
+    # TEXTOS
 
-'''
-    def graphBarPxGrouped(self, df, ejex, ejey, title='Titulo de la grafica', barmode='group'):
-        """
-        Elemento grafica de barras (px bar) retornado
-        """
+    def drawDescriptionH5(self, text):
+        return html.Div([html.H5(text)], style={'textAlign': 'center'})
 
-        px_bar = px.bar(df,
-                        x=ejex,
-                        y=ejey,
-                        barmode=barmode,
-                        title=title)
-        px_bar.update_layout(
-            template='plotly_dark',
-            plot_bgcolor='rgba(0, 0, 0, 0)',
-            paper_bgcolor='rgba(0, 0, 0, 0)',
-        )
+    def drawDescriptionH4(self, text):
+        return html.Div([html.H4(text)], style={'textAlign': 'center'})
 
-        return px_bar
-
-    def graphBarPxColor(self, df, ejex, ejey, color, title='Titulo de la grafica'):
-        """
-        Elemento grafica de barras (px bar) retornado
-        """
-
-        px_bar = px.bar(df,
-                        x=ejex,
-                        y=ejey,
-                        color=color,
-                        title=title)
-        px_bar.update_layout(
-            template='plotly_dark',
-            plot_bgcolor='rgba(0, 0, 0, 0)',
-            paper_bgcolor='rgba(0, 0, 0, 0)',
-        )
-
-        return px_bar
-'''
+    def drawParagraph(self, text, size, color):
+        return html.P(text,
+                      style={
+                          'textAlign': 'center',
+                          'color': color,
+                          'fontSize': size}
+                      )
