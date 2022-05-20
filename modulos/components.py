@@ -55,6 +55,41 @@ class Builder:
 
         return [dcc.Graph(figure=px_bar)]
 
+    def graphBarPx2(self, *args, **kwargs):
+        self.df = kwargs['df']
+        self.ejex = kwargs['ejex']
+        self.ejey = kwargs['ejey']
+        self.title = kwargs['title']
+        self.barmode = kwargs['barmode']
+        #self.color = kwargs['color']
+        #self.color_discrete_map = kwargs['color_discrete_map']
+        """
+        Elemento grafica de barras (px bar) retornado
+        """
+
+        px_bar = px.bar(self.df,
+                        x=self.ejex,
+                        y=self.ejey,
+                        title=self.title,
+                        # color=self.color,
+                        # color_discrete_map=self.color_discrete_map
+                        barmode=self.barmode
+                        )
+
+        px_bar.update_layout(
+            template='plotly_dark',
+            plot_bgcolor='rgba(0, 0, 0, 0)',
+            paper_bgcolor='rgba(0, 0, 0, 0)',
+            # xaxis_title="FONDEADOR",
+            #legend_title="PERFIL DEL CLIENTE",
+            font=dict(
+                #family="Courier New, monospace",
+                size=12,
+                color="#0a0a0a")
+        )
+
+        return [dcc.Graph(figure=px_bar)]
+
     # TEXTOS
 
     def drawDescriptionH5(self, text):
