@@ -243,6 +243,8 @@ def update_bar_chart(Perfil):
 
     clientes = list(mask["Cliente"])
     y1 = list(mask["Saldo insoluto actual"])
+    #print('y1 y1')
+    # print(y1)
 
     if Perfil == 'Riesgo muy alto':
         color0 = 'red'
@@ -260,8 +262,11 @@ def update_bar_chart(Perfil):
     Perfil = Perfil.upper()
     tipo_perfil = Perfil
 
+    sum_saldos = locale.currency(
+        sum(y1), grouping=True)
+
     clientes_saldos.update_layout(
-        title=f"SALDOS INSOLUTOS DE CLIENTES CON PERFIL {tipo_perfil}",
+        title=f"SALDOS INSOLUTOS DE CLIENTES CON PERFIL {tipo_perfil}<br><sup>SUMA DE SALDOS INSOLUTOS IGUAL A {sum_saldos}</sup>",
         xaxis_title="CLIENTES",
         legend_title="TIPO DE APALANCAMIENTO",
         font=dict(
@@ -337,8 +342,11 @@ def update_bar_chart(status):
     clientes_saldos.add_trace(
         go.Bar(x=clientes, y=y1, name="Estatus de cesión"))
 
+    sum_saldos = locale.currency(
+        sum(y1), grouping=True)
+
     clientes_saldos.update_layout(
-        title="SALDOS INSOLUTOS POR TIPO DE ESTATUS DE CESIÓN",
+        title=f"SALDOS INSOLUTOS POR TIPO DE ESTATUS DE CESIÓN<br><sup>SUMA DE SALDOS INSOLUTOS IGUAL A {sum_saldos}</sup>",
         xaxis_title="CLIENTES",
         legend_title="ESTATUS DE CESIÓN",
         font=dict(
