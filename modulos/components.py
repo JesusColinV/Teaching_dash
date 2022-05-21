@@ -3,6 +3,7 @@ from datetime import date
 import plotly.express as px
 import plotly.graph_objects as go
 import dash_html_components as html
+import dash_bootstrap_components as dbc
 
 
 class Builder:
@@ -50,7 +51,7 @@ class Builder:
             font=dict(
                 #family="Courier New, monospace",
                 size=12,
-                color="#0a0a0a")
+                color="#fffffc")
         )
 
         return [dcc.Graph(figure=px_bar)]
@@ -85,23 +86,56 @@ class Builder:
             font=dict(
                 #family="Courier New, monospace",
                 size=12,
-                color="#0a0a0a")
+                color="#fffffc")
         )
 
         return [dcc.Graph(figure=px_bar)]
 
+#    def graphRadar(self, r, theta):
+#        self.r = r
+#        self.theta = theta
+#
+#        fig = go.Figure(data=go.Scatterpolar(
+#            r=[1, 5, 2, 2, 3],
+#            theta=['processing cost', 'mechanical properties', 'chemical stability', 'thermal stability',
+#                   'device integration'],
+#            fill='toself'
+#        ))
+
+#        fig.update_layout(
+#            polar=dict(
+#                radialaxis=dict(
+#                    visible=True
+#                ),
+#            ),
+#            showlegend=False
+#        )
+
     # TEXTOS
 
     def drawDescriptionH5(self, text):
-        return html.Div([html.H5(text)], style={'textAlign': 'center'})
+        return dbc.Card([html.H5(text)], style={'textAlign': 'center'})
 
     def drawDescriptionH4(self, text):
-        return html.Div([html.H4(text)], style={'textAlign': 'center'})
+        return dbc.Card([html.H4(text)], style={'textAlign': 'center'})
+
+    def drawDescriptionH3(self, text):
+        return dbc.Card([html.H3(text)], style={'textAlign': 'center'})
+
+    def drawDescriptionH2(self, text):
+        return dbc.Card([html.H2(text)], style={'textAlign': 'center'})
+
+    def drawDescriptionH1(self, text):
+        return dbc.Card([html.H1(text)], style={'textAlign': 'center'})
+
+    def drawTitle(self, text):
+        return dbc.Card(html.H1(id='h1', className='h1', children=[text], style={'textAlign': 'center',
+                                                                                 'color': 'white'}))
 
     def drawParagraph(self, text, size, color):
-        return html.P(text,
-                      style={
-                          'textAlign': 'center',
-                          'color': color,
-                          'fontSize': size}
-                      )
+        return dbc.Card(html.H6(text,
+                                style={
+                                    'textAlign': 'center',
+                                    'color': color,
+                                    'fontSize': size}
+                                ))
