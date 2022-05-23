@@ -45,18 +45,30 @@ colors = {
 
 builder = Builder()
 
-external_stylesheets = [dbc.themes.SLATE]
+# external_stylesheets = [dbc.themes.SLATE]
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 
-def Tabs2():
+# FINANCIAMIENTO PyME A TU MEDIDA
+
+
+def drawJumbotron():
     return html.Div([
-        dcc.Tabs(id="tabs-example-graph2", value='tab-1-example-graph', children=[
-            dcc.Tab(label='FONDEADOR', value='tab-1-example-graph'),
-            dcc.Tab(label='CESIÓN', value='tab-2-example-graph'),
-            dcc.Tab(label='SECTOR', value='tab-3-example-graph'),
-        ]),
-        html.Div(id='tabs-content-example-graph2')
-    ])
+        dbc.Container(
+            [
+                html.Span(className='span1', children=["PORTAFOLIO"]), html.Span(
+                    " CLIENTES SMX", style={'color': 'white',
+                                            'fontSize': 40}),
+                html.Br(),
+                html.Hr(className="my-2"),
+                html.Span(className='span2', children=["FINANCIAMIENTO"]), html.Span(
+                    "  PyME A TU MEDIDA", style={'color': 'white',
+                                                 'fontSize': 20, "flex-direction": "row", "justify-content": "right"}),
+
+            ],
+            fluid=True,
+            className="mainJumbotron",
+        )])
 
 
 # "background-image: url(../images/test-background.gif)
@@ -68,70 +80,49 @@ app = Dash(name='app_superadmi',
            )
 
 
-app.layout = html.Div([
+app.layout = html.Div(children=[
     # Component to detect the url
     dcc.Location(id='url', refresh=False),
-    dbc.Card(
-        dbc.CardBody(children=[
-            html.Div(id='header', className='myHeader', children=[
-                builder.drawTitle(
-                    'PORTAFOLIO DE CLIENTES SMX')
-            ]),
-            html.Br(),
-            dbc.Row(dbc.Col([
-                dbc.Row(builder.drawParagraph(
-                    'SALDOS INSOLUTOS POR CLIENTE Y POR PERFIL DE RIESGO DEL CLIENTE', 17, 'white'))
-            ], width=12),
-                align='center'),
-            dbc.Row(Tabs1(),
-                    id='tab1',
-                    className='Body',),
-            html.Br(),
-            dbc.Row(dbc.Col([
-                dbc.Row(builder.drawParagraph(
-                    'SALDOS INSOLUTOS POR FONDEADOR, POR ESTATUS DE CESIÓN Y POR SECTOR', 17, 'white'))
-            ], width=12),
-                align='center'),
-            html.Br(),
-            dbc.Row(Tabs2(),
-                    id='tab2',
-                    className='Body',),
-            html.Br(),
-            dbc.Row(dbc.Col([
-                dbc.Row(builder.drawParagraph(
-                    'SALDOS INSOLUTOS POR CLIENTE Y POR PERFIL DE RIESGO DEL CLIENTE', 17, 'white'))
-            ], width=12),
-                align='center'),
-            html.Br(),
-            dbc.Row([
-                dbc.Col([
-                    drawFigure6(df_filtro_saldos)
-                ], width=12),
-            ], align='center'),
-            html.Br(),
-            dbc.Row(dbc.Col([
-                dbc.Row(builder.drawParagraph(
-                    'APALANCAMIENTOS POR CLIENTE Y METRICAS PARTICULARES', 17, 'white'))
-            ], width=12),
-                align='center'),
-            dbc.Row(
-                drawFigures1(client_list)
-            ),
-            html.Br(),
-            html.Div(drawMetrics())
-
-
-        ]), color='dark')
+    html.Div(id='jbn', className='mainJumbotron', children=[drawJumbotron()]),
+    html.Div(className='paragraphs', children=[builder.drawParagraph(
+        'SALDOS INSOLUTOS POR CLIENTE Y POR PERFIL DE RIESGO DEL CLIENTE', 17, 'white')]
+    ),
+    html.Div(className='tabs1_2', children=[dbc.Row(Tabs1(),
+                                                    id='tab1',
+                                                    className='Body')]),
+    html.Br(),
+    html.Div(className='paragraphs', children=[builder.drawParagraph(
+        'SALDOS INSOLUTOS POR FONDEADOR, POR ESTATUS DE CESIÓN Y POR SECTOR', 17, 'white')]),
+    # html.Br(),
+    html.Div(className='tabs1_2', children=[dbc.Row(Tabs2(),
+                                                    id='tab2',
+                                                    className='Body')]),
+    html.Br(),
+    html.Div(className='paragraphs', children=[builder.drawParagraph(
+        'SALDOS INSOLUTOS POR CLIENTE Y POR PERFIL DE RIESGO DEL CLIENTE', 17, 'white')]),
+    # html.Br(),
+    html.Div(className='tabs1_2', children=[
+        drawFigure6(df_filtro_saldos)]),
+    html.Br(),
+    html.Div(className='paragraphs', children=[builder.drawParagraph(
+        'APALANCAMIENTOS POR CLIENTE Y METRICAS PARTICULARES', 17, 'white')]),
+    html.Div(className='tabs1_2', children=[
+        drawFigures1(client_list)]
+    ),
+    html.Div(id='cliente_panel'),
+    html.Div(children=[drawMetrics()])
 ],
     # End of Dashboard
     id='mainContainer',
     className='MainContainer',
+
+
 )
 
 
 # CALLBACK PRIMER TAB
-@app.callback(Output('tabs-test', 'children'),
-              Input('tabs-example-graph', 'value'))
+@ app.callback(Output('tabs-test', 'children'),
+               Input('tabs-example-graph', 'value'))
 def render_content(tab):
     if tab == 'tab-1-example-graph':
         # print('opcion1')
@@ -141,8 +132,8 @@ def render_content(tab):
         return html.Div(builder.drawDescriptionH5('ESTAMOS EN TAB2'))
 
 
-@app.callback(Output('tabs-content-example-graph', 'children'),
-              Input('tabs-example-graph', 'value'))
+@ app.callback(Output('tabs-content-example-graph', 'children'),
+               Input('tabs-example-graph', 'value'))
 def render_content(tab):
     # print('opcion0')
     if tab == 'tab-1-example-graph':
@@ -150,7 +141,7 @@ def render_content(tab):
         return html.Div(id='my_div0', children=[
             html.Div(children=[
                 dbc.Row(dbc.Card(builder.graphBarPx(
-                    df=df_filtro_saldos, ejex='Cliente', ejey='Saldo insoluto actual', color='Perfil de riesgo', title='GRAFICA 1', color_discrete_map={
+                    df=df_filtro_saldos, ejex='Cliente', ejey='Saldo insoluto actual', color='Perfil de riesgo', title='SALDO INSOLUTO POR CLIENTE (CLIENTES CON SALDO MAYOR A 3MDP)', color_discrete_map={
                         'Sin riesgo': 'blue',
                         'Riesgo moderado': 'yellow', 'Riesgo alto': 'orange', 'Riesgo muy alto': 'red'
                     })))])], style={"width": "100%", "display": "block", "flex-direction": "row", "justify-content": "center"})
@@ -175,7 +166,7 @@ def render_content(tab):
         ], style={"width": "100%", "display": "block", "flex-direction": "row", "justify-content": "center"})
 
 
-@app.callback(
+@ app.callback(
     Output("graph2", "children"),
     Input("dropdown0", "value"))
 def update_bar_chart(Perfil):
@@ -183,7 +174,7 @@ def update_bar_chart(Perfil):
 
     clientes = list(mask["Cliente"])
     y1 = list(mask["Saldo insoluto actual"])
-    #print('y1 y1')
+    # print('y1 y1')
     # print(y1)
 
     if Perfil == 'Riesgo muy alto':
@@ -210,7 +201,7 @@ def update_bar_chart(Perfil):
         xaxis_title="CLIENTES",
         legend_title="TIPO DE APALANCAMIENTO",
         font=dict(
-            #family="Courier New, monospace",
+            # family="Courier New, monospace",
             size=14,
             color="#fffffc"))
     clientes_saldos.update_layout(barmode='stack')
@@ -244,7 +235,7 @@ def render_content(tab):
         return html.Div(id='my_div3', children=[
             html.Div(children=[
                 dbc.Row(dbc.Card(builder.drawParagraph(
-                        'ESTATUS DE CESIÓN', 10, 'black')
+                        'ESTATUS DE CESIÓN', 10, 'white')
                 )),
                 dbc.Row(dcc.Dropdown(
                     id="dropdown2",
@@ -290,7 +281,7 @@ def update_bar_chart(status):
         xaxis_title="CLIENTES",
         legend_title="ESTATUS DE CESIÓN",
         font=dict(
-            #family="Courier New, monospace",
+            # family="Courier New, monospace",
             size=14,
             color="#fffffc"))
     clientes_saldos.update_layout(barmode='stack')
@@ -323,7 +314,7 @@ def update_bar_chart(cliente):
     except:
         val = '$$'
 
-    return html.H5(f"NETO DE LA FACTUACIÓN MENSUAL REAL DEL CLIENTE IGUAL A: {val}")
+    return html.H5(f"NETO DE LA FACTUACIÓN MENSUAL REAL DEL CLIENTE IGUAL A: {val}", style={'color': 'white'})
 
 
 @app.callback(
@@ -347,7 +338,7 @@ def update_bar_chart(cliente):
         xaxis_title="CLIENTES",
         legend_title="TIPO DE APALANCAMIENTO",
         font=dict(
-            #family="Courier New, monospace",
+            # family="Courier New, monospace",
             size=16,
             color="#fffffc"))
     clientes_saldos.update_layout(barmode='group')
@@ -421,10 +412,10 @@ def update_bar_chart(cliente):
 
     # DATA RADAR GRAPH
 
-    r = [y1, y2, y3, y4]
-    print(f'r -> {y4}')
-    print(f'YS -> {y1, y2, y3, y4}')
-    theta = [y_1, y_2, y_3, y_4]
+    r = [y1, y2, y4, y3]
+    # print(f'r -> {y4}')
+    # print(f'YS -> {y1, y2, y3, y4}')
+    theta = [y_1, y_2, y_4, y_3]
 
     fig = go.Figure(data=go.Scatterpolar(
         r=r,
@@ -439,7 +430,7 @@ def update_bar_chart(cliente):
             ),
         ),
         showlegend=False,
-        title='GRAFICO DE RADAR CALIDAD DEL CLIENTE'
+        title='CALIDAD DEL CLIENTE PARA SMX'
     )
     fig.update_layout(
         template='plotly_dark',
@@ -451,6 +442,16 @@ def update_bar_chart(cliente):
             figure=fig
         ),
     ])
+
+
+@app.callback(
+    Output("cliente_panel", "children"),
+    Input("dropdown1", "value"))
+def update_panel_metrics(cliente):
+    cliente = cliente.upper()
+
+    return html.Div(className='paragraphs', children=[builder.drawParagraph(
+        f'PANEL DE METRICAS PARA EL CLIENTE "{cliente}"', 17, 'white')])
 
 
 @app.callback(
@@ -472,7 +473,7 @@ def update_bar_chart(cliente):
     perfil = perfil[0].upper()
 
     pagadoresA = df2['Pagadores autorizados'].tolist()
-    #print(f'el tipo de dato es igual a{type(pagadoresA)}')
+    # print(f'el tipo de dato es igual a{type(pagadoresA)}')
     pagadoresA = pagadoresA[0].upper()
     # print(
     #    f'el tipo de dato es igual a{type(pagadoresA)}')
@@ -492,7 +493,7 @@ def update_bar_chart(cliente):
     fondeador = fondeador[0].upper()
 
     est_fact = df2['Estatus Facturación'].tolist()
-    #print(f'est_fact -> {est_fact[0]}')
+    # print(f'est_fact -> {est_fact[0]}')
     est_fact = est_fact[0]
 
     try:
@@ -518,7 +519,7 @@ def update_bar_chart(cliente):
 
     Color1 = 'red' if garantia == 'NO' else 'green'
 
-    #print(f'perfil {perfil}')
+    # print(f'perfil {perfil}')
     if perfil == 'RIESGO MUY ALTO':
         Color2 = 'red'
     if perfil == 'RIESGO ALTO':
@@ -550,158 +551,177 @@ def update_bar_chart(cliente):
     # if est_fact == 'N/A':
     #    Color5 = 'green'
 
-    #print(f'pagadoresA -> {len(pagadoresA)}')
+    # EDITANDO LAS METRICAS
+    ####
+
+    # print(f'pagadoresA -> {len(pagadoresA)}')
     if len(pagadoresA) > 19:
         fontSizePayers = 22
     else:
         fontSizePayers = 30
 
-    return html.Div([
-        dbc.Card(
-            dbc.CardBody([
-                html.P(f"METRICAS PARTICULARES DEL CLIENTE '{cliente}'",
+    return html.Div(children=[
+        html.Div(children=[
+            html.Div(children=[
+                    html.H6(children='GARANTÍA',
+                            style={
+                                'textAlign': 'center',
+                                'color': 'black',
+                                'fontSize': 15}
+                            ),
+
+                    html.P(garantia,
+                           style={
+                               'textAlign': 'center',
+                               'color': Color1,
+                               'fontSize': 30}
+                           )], className="card_container three columns", style={
+                'background': 'white',
+                "border": f"4px {Color1} solid",
+                "border-radius": 10,
+                'margin': 20}
+            ),
+            html.Div([
+                html.H6(children='PRODUCTO',
+                        style={
+                            'textAlign': 'center',
+                            'color': 'black',
+                            'fontSize': 15}
+                        ),
+
+                html.P(producto,
                        style={
                            'textAlign': 'center',
-                           'color': 'white',
+                           'color': 'black',
                            'fontSize': 30}
-                       ),
-                dbc.Row([
-                    dbc.Col([
-                            html.Div([
-                                html.Div(id='box1', className='myMetric', children=[
-                                    html.H6(children='GARANTÍA',
-                                            style={
-                                                'textAlign': 'center',
-                                                'color': 'black'}),
-                                    html.P(garantia,
-                                           style={
-                                               'textAlign': 'center',
-                                               'color': Color1,
-                                               'fontSize': 30}
-                                           ),
-                                ], style={'textAlign': 'center'})
-                            ])
-                            ], width=3),
-                    dbc.Col([
-                        html.Div([
-                            html.Div(id='box2', className='myMetric', children=[
-                                html.H6(children='PRODUCTO',
-                                        style={
-                                            'textAlign': 'center',
-                                            'color': 'black'}),
-                                html.P(producto,
-                                       style={
-                                           'textAlign': 'center',
-                                           'color': 'black',
-                                           'fontSize': 30}
-                                       ),
-                            ], style={'textAlign': 'center'})
-                        ])
-                    ], width=3),
-                    dbc.Col([
-                        html.Div([
-                            html.Div(id='box3', className='myMetric', children=[
-                                html.H6(children='PERFIL DE RIESGO',
-                                        style={
-                                            'textAlign': 'center',
-                                            'color': 'black'}),
-                                html.P(perfil,
-                                       style={
-                                           'textAlign': 'center',
-                                           'color': Color2,
-                                           'fontSize': 30}
-                                       ),
-                            ], style={'textAlign': 'center'})
-                        ])
-                    ], width=3),
-                    dbc.Col([
-                        html.Div([
-                            html.Div(id='box4', className='myMetric', children=[
-                                html.H6(children='PAGADORES AUTORIZADOS',
-                                        style={
-                                            'textAlign': 'center',
-                                            'color': 'black'}),
-                                html.P(pagadoresA,
-                                       style={
-                                           'textAlign': 'center',
-                                           'color': 'black',
-                                           'fontSize': fontSizePayers}
-                                       ),
-                            ], style={'textAlign': 'center'})
-                        ])
-                    ], width=3)
+                       )], className="card_container three columns", style={
+                'background': 'white',
+                "border": "4px black solid",
+                "border-radius": 10,
+                'margin': 20
+            }
+            ),
+            html.Div([
+                html.H6(children='PERFIL DE RIESGO',
+                        style={
+                            'textAlign': 'center',
+                            'color': 'black',
+                            'fontSize': 15}
+                        ),
 
-                ], align='center'),
-                html.Br(),
-                dbc.Row([
-                    dbc.Col([
-                            html.Div([
-                                html.Div(id='box5', className='myMetric', children=[
-                                    html.H6(children=' % DE RETRASO / SALDO ACTUAL EN BURÓ DE CRÉDITO ',
-                                            style={
-                                                'textAlign': 'center',
-                                                'color': 'black',
-                                                'fontSize': 13}),
-                                    html.P(retraso1,
-                                           style={
-                                               'textAlign': 'center',
-                                               'color': Color3,
-                                               'fontSize': 27}
-                                           ),
-                                ], style={'textAlign': 'center'})
-                            ])
-                            ], width=3),
-                    dbc.Col([
-                        html.Div([
-                            html.Div(id='box6', className='myMetric', children=[
-                                html.H6(children='ESTATUS DE CESIÓN',
-                                        style={
-                                            'textAlign': 'center',
-                                            'color': 'black'}),
-                                html.P(cesion,
-                                       style={
-                                           'textAlign': 'center',
-                                           'color': Color4,
-                                           'fontSize': 30}
-                                       ),
-                            ], style={'textAlign': 'center'})
-                        ])
-                    ], width=3),
-                    dbc.Col([
-                        html.Div([
-                            html.Div(id='box7', className='myMetric', children=[
-                                html.H6(children='FONDEADOR',
-                                        style={
-                                            'textAlign': 'center',
-                                            'color': 'black'}),
-                                html.P(fondeador,
-                                       style={
-                                           'textAlign': 'center',
-                                           'color': 'black',
-                                           'fontSize': 30}
-                                       ),
-                            ], style={'textAlign': 'center'})
-                        ])
-                    ], width=3),
-                    dbc.Col([
-                        html.Div([
-                            html.Div(id='box8', className='myMetric', children=[
-                                html.H6(children='ESTATUS FACTURACIÓN',
-                                        style={
-                                            'textAlign': 'center',
-                                            'color': 'black'}),
-                                html.P(est_fact,
-                                       style={
-                                           'textAlign': 'center',
-                                           'color': Color5,
-                                           'fontSize': 30}
-                                       ),
-                            ], style={'textAlign': 'center'}
-                            )
-                        ])
-                    ], width=3)
+                html.P(perfil,
+                       style={
+                           'textAlign': 'center',
+                           'color': Color2,
+                           'fontSize': 30}
+                       )], className="card_container three columns", style={
+                'background': 'white',
+                "border": f"4px {Color2} solid",
+                "border-radius": 10,
+                'margin': 20
+            }
+            ),
+            html.Div([
+                html.H6(children='PAGADORES AUTORIZADOS',
+                        style={
+                            'textAlign': 'center',
+                            'color': 'black',
+                            'fontSize': 15}
+                        ),
 
-                ], align='center')
-            ])
-        )
+                html.P(pagadoresA,
+                       style={
+                           'textAlign': 'center',
+                           'color': 'black',
+                           'fontSize': fontSizePayers}
+                       )], className="card_container three columns", style={
+                'background': 'white',
+                "border": "4px black solid",
+                "border-radius": 10,
+                'margin': 20
+            }
+            )
+        ]),
+        html.Div([  # Problema al retirar zoom de 90% en display
+            html.Div([
+                html.H6(children='% DE RETRASO / SALDO ACTUAL EN BURÓ DE CRÉDITO',
+                        style={
+                            'textAlign': 'center',
+                            'color': 'black',
+                            'fontSize': 15}
+                        ),
+
+                html.P(retraso1,
+                       style={
+                           'textAlign': 'center',
+                           'color': Color3,
+                           'fontSize': 30}
+                       )], className="card_container three columns", style={
+                'background': 'white',
+                "border": f"4px {Color3} solid",
+                "border-radius": 10,
+                'margin': 20
+            }
+            ),
+            html.Div([
+                html.H6(children='ESTATUS DE CESIÓN',
+                        style={
+                            'textAlign': 'center',
+                            'color': 'black',
+                            'fontSize': 15}
+                        ),
+
+                html.P(cesion,
+                       style={
+                           'textAlign': 'center',
+                           'color': Color4,
+                           'fontSize': 30}
+                       )], className="card_container three columns", style={
+                'background': 'white',
+                "border": f"4px {Color4} solid",
+                "border-radius": 10,
+                'margin': 20
+            }
+            ),
+            html.Div([
+                html.H6(children='FONDEADOR',
+                        style={
+                            'textAlign': 'center',
+                            'color': 'black',
+                            'fontSize': 15}
+                        ),
+
+                html.P(fondeador,
+                       style={
+                           'textAlign': 'center',
+                           'color': 'black',
+                           'fontSize': 30}
+                       )], className="card_container three columns", style={
+                'background': 'white',
+                "border": "4px black solid",
+                "border-radius": 10,
+                'margin': 20
+            }
+            ),
+            html.Div([
+                html.H6(children='ESTATUS FACTURACIÓN',
+                        style={
+                            'textAlign': 'center',
+                            'color': 'black',
+                            'fontSize': 15}
+                        ),
+
+                html.P(est_fact,
+                       style={
+                           'textAlign': 'center',
+                           'color': Color5,
+                           'fontSize': 30}
+                       )], className="card_container three columns", style={
+                'background': 'white',
+                "border": f"4px {Color5} solid",
+                "border-radius": 10,
+                'margin': 20
+            }
+            )
+        ])
     ])

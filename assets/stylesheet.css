@@ -1,17 +1,64 @@
-body {
-    background: #e5ebf0;
+* {
+    margin: 0;
+
 }
 
+body {
+    background: #0c2836;
+}
 
+.span1 {
+    color: #d90429;
+    font-size: 40px;
+    text-shadow: 0.8px 0 #7a0015, 0 0.8px #7a0015, -0.8px 0 #7a0015, 0 -0.8px #7a0015;
+}
 
-/*.miClase {
+.span2 {
+    color: #d90429;
+    font-size: 20px;
+    text-shadow: 0.8px 0 #7a0015, 0 0.8px #7a0015, -0.8px 0 #7a0015, 0 -0.8px #7a0015;
+}
 
-    background: #c8ff00
-}*/
 
 .myMetric {
 
     border-radius: 25px;
     border: 3px solid #ffffff;
     background: #ffffff
+}
+
+
+.genericBackground {
+    background: #0c2836;
+}
+
+.mainJumbotron {
+    background-image: url("https://smxfinancial.com/wp-content/uploads/2019/04/bgn-searching.jpg");
+    margin: 20px;
+    border-radius: 8px;
+}
+
+.paragraphs {
+    margin: 20px;
+    border: 3px solid rgb(255, 255, 255);
+    border-radius: 5px;
+    border-color: #ffffff;
+    background-color: #d90429
+}
+
+
+.tabs1_2 {
+    margin: 20px;
+    border: 3px solid rgb(255, 255, 255);
+    border-radius: 5px;
+    border-color: #ffffff
+}
+
+
+.metrics {
+    margin: 20px;
+    border: 3px solid rgb(255, 255, 255);
+    border-radius: 5px;
+    border-color: #d90429;
+    background-color: #ffffff
 }

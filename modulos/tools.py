@@ -8,13 +8,24 @@ builder = Builder()
 
 
 def Tabs1():
-    return html.Div([
+    return html.Div(className='genericBackground', children=[
         dcc.Tabs(id="tabs-example-graph", value='tab-1-example-graph', children=[
             dcc.Tab(label='Gráfica 1', value='tab-1-example-graph'),
             dcc.Tab(label='Gráfica 2', value='tab-2-example-graph'),
         ]),
         html.Br(),
         html.Div(id='tabs-content-example-graph')
+    ])
+
+
+def Tabs2():
+    return html.Div(className='genericBackground', children=[
+        dcc.Tabs(id="tabs-example-graph2", value='tab-1-example-graph', children=[
+            dcc.Tab(label='FONDEADOR', value='tab-1-example-graph'),
+            dcc.Tab(label='CESIÓN', value='tab-2-example-graph'),
+            dcc.Tab(label='SECTOR', value='tab-3-example-graph'),
+        ]),
+        html.Div(id='tabs-content-example-graph2')
     ])
 
 
@@ -31,7 +42,7 @@ def drawFigure5():
 
 
 def drawFigure6(df):
-    return html.Div(id='my_div5', className='miClase', children=[
+    return html.Div(className='genericBackground', children=[
         dbc.Card(children=[
             dbc.Row(builder.graphBarPx2(
                     df=df, ejex="Cliente", ejey=["Apalancamiento / ventas (autorizado)", "Apalancamiento / ventas (reales)"], title='TIPOS DE APALANCAMIENTO', barmode='group')
@@ -95,10 +106,10 @@ def drawFigures1(client_list):
             clearable=False,
         ),
             drawFigure7()
-        ], style={'width': '40%', 'display': 'inline-block'}),
+        ], style={'width': '50%', 'display': 'inline-block'}),
         html.Div(children=[drawFigure3(),
                            drawText8()], style={
-                 'width': '60%', 'display': 'inline-block'})
+                 'width': '50%', 'display': 'inline-block'})
     ], style={'display': 'flex', 'align-items': 'center'})  # estilo que alinea horizontalmente los dos divs
 
 # Metricas

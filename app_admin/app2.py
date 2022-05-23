@@ -1,3 +1,4 @@
+# ULTIMA VERSION CON BOOTSTRAP THEME
 from modulos.tools import *
 import math
 from dash import Dash, dcc, html
@@ -10,14 +11,10 @@ import locale
 locale.setlocale(locale.LC_ALL, '')
 
 # Data
-# df = pd.read_excel(
-#    'C:/Users/alexi/OneDrive/Desktop/Portafolio_2/Teaching_dash/app_admin/Analisis de Portafolio.xlsx')
 
 df = pd.read_excel(
     './app_admin/Analisis de Portafolio.xlsx')
 
-
-#'./app_admin/Analisis de Portafolio.xlsx'
 
 client = list(df['Cliente'])
 client_list = []
@@ -30,6 +27,7 @@ sesion_status = []
 for status in sesion:
     if status not in sesion_status:
         sesion_status.append(status)
+
 
 # df filtrado a los clientes con saldo insoluto mayor a 3 mdp
 
@@ -47,22 +45,8 @@ colors = {
 # TABS
 
 builder = Builder()
-#external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 external_stylesheets = [dbc.themes.SLATE]
-
-
-"""
-def Tabs1():
-    return html.Div([
-        dcc.Tabs(id="tabs-example-graph", value='tab-1-example-graph', children=[
-            dcc.Tab(label='Gráfica 1', value='tab-1-example-graph'),
-            dcc.Tab(label='Gráfica 2', value='tab-2-example-graph'),
-        ]),
-        html.Br(),
-        html.Div(id='tabs-content-example-graph')
-    ])
-"""
 
 
 def Tabs2():
@@ -76,6 +60,7 @@ def Tabs2():
     ])
 
 
+# "background-image: url(../images/test-background.gif)
 app = Dash(name='app_superadmi',
            server=server,
            url_base_pathname='/admin/',
@@ -89,11 +74,10 @@ app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
     dbc.Card(
         dbc.CardBody(children=[
-            dbc.Row(dbc.Col([
-                dbc.Row(builder.drawDescriptionH1(
-                    'PORTAFOLIO DE CLIENTES SMX'))
-            ], width=12),
-                align='center'),
+            html.Div(id='header', className='myHeader', children=[
+                builder.drawTitle(
+                    'PORTAFOLIO DE CLIENTES SMX')
+            ]),
             html.Br(),
             dbc.Row(dbc.Col([
                 dbc.Row(builder.drawParagraph(
@@ -381,6 +365,96 @@ def update_bar_chart(cliente):
 
 
 @app.callback(
+    Output("graph4", "children"),
+    Input("dropdown1", "value"))
+def update_bar_chart(cliente):
+    mask = df[df['Cliente'] == cliente]
+
+    clientes = list(mask["Cliente"])
+    y1 = list(mask["Aforo real de garantía"])
+    y_1 = 'Garantía'
+    y1 = y1[0]
+    y1 = 10 if y1 > 0 else 1
+    y2 = list(mask['Perfil de riesgo'])
+    y2 = y2[0].upper()
+    y_2 = 'Perfil de riesgo'
+    if y2 == 'RIESGO MUY ALTO':
+        y2 = 1
+    if y2 == 'RIESGO ALTO':
+        y2 = 4
+    if y2 == 'RIESGO MODERADO':
+        y2 = 7
+    if y2 == 'SIN RIESGO':
+        y2 = 10
+
+    y3 = mask['% de Retraso / saldo actual en (Buró de credito)'].tolist()
+    y_3 = '% de Retraso / saldo actual en (Buró de credito)'
+    y3 = y3[0]
+    if y3 >= 1:
+        y3 = 0
+    if y3 >= 0.7 and y3 < 1:
+        y3 = 3
+    if y3 >= 0.4 and y3 < 0.7:
+        y3 = 6
+    if y3 >= 0.1 and y3 < 0.4:
+        y3 = 9
+    if y3 < 0.1:
+        y3 = 10
+    if math.isnan(y3):
+        y3 = 1
+
+    y4 = mask['Estatus Facturación'].tolist()
+    y_4 = 'Estatus Facturación'
+
+    try:
+        y4 = y4[0].upper()
+    except:
+        y4 = 1
+
+    if y4 == 'DETENIDA':
+        y4 = 1
+    if y4 == 'N/A' or y4 == 'REDUCIDA':
+        y4 = 4
+    if y4 == 'RETRASADA':
+        y4 = 7
+    if y4 == 'NORMAL':
+        y4 = 10
+
+    # DATA RADAR GRAPH
+
+    r = [y1, y2, y3, y4]
+    print(f'r -> {y4}')
+    print(f'YS -> {y1, y2, y3, y4}')
+    theta = [y_1, y_2, y_3, y_4]
+
+    fig = go.Figure(data=go.Scatterpolar(
+        r=r,
+        theta=theta,
+        fill='toself'
+    ))
+
+    fig.update_layout(
+        polar=dict(
+            radialaxis=dict(
+                visible=True
+            ),
+        ),
+        showlegend=False,
+        title='GRAFICO DE RADAR CALIDAD DEL CLIENTE'
+    )
+    fig.update_layout(
+        template='plotly_dark',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+    )
+    return dbc.Card([
+        dcc.Graph(
+            figure=fig
+        ),
+    ])
+
+
+@app.callback(
     Output("metricas1", "children"),
     Input("dropdown1", "value"))
 def update_bar_chart(cliente):
@@ -455,7 +529,14 @@ def update_bar_chart(cliente):
     if perfil == 'SIN RIESGO':
         Color2 = 'green'
 
-    Color3 = 'red' if retraso1 > 1 else 'green'
+    try:
+        Color3 = 'red' if retraso1 > 1 else 'green'
+    except:
+        if retraso1 == 'N/A':
+            Color3 = 'orange'
+        else:
+            pass
+
     Color4 = 'red' if cesion == 'POR CONFIRMAR' else 'green'
     Color5 = 'black'
 

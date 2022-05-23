@@ -51,7 +51,7 @@ class Builder:
             font=dict(
                 #family="Courier New, monospace",
                 size=12,
-                color="#fffffc")
+                color="white")
         )
 
         return [dcc.Graph(figure=px_bar)]
@@ -86,7 +86,7 @@ class Builder:
             font=dict(
                 #family="Courier New, monospace",
                 size=12,
-                color="#fffffc")
+                color="white")
         )
 
         return [dcc.Graph(figure=px_bar)]
